@@ -14,7 +14,10 @@ ports_description:
   3190/tcp: Pinnwand im Browser
 webui: http://[HOST]:[PORT:3190]
 map:
-  - addon_config:rw
+  - type: addon_config
+    read_only: false
+  - type: all_addon_configs
+    read_only: true
 backup_exclude:
   - "app"
 options:

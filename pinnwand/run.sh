@@ -25,6 +25,19 @@ fi
 
 mkdir -p "$DATA/database" "$DATA/uploads" "$DATA/backups"
 
+# Umzug: Hat diese Installation noch keine Datenbank, die Daten einer früheren
+# Pinnwand-Installation übernehmen (alter Add-on-Ordner, nur lesend eingebunden).
+if [ ! -f "$DATA/database/database.sqlite" ] && [ -d /addon_configs ]; then
+  for old in /addon_configs/*_pinnwand; do
+    [ -f "$old/database/database.sqlite" ] || continue
+    [ "$(cd "$old" && pwd -P)" = "$(cd "$DATA" && pwd -P)" ] && continue
+    echo "[pinnwand] Übernehme die Daten aus $(basename "$old") …"
+    cp -a "$old/database/." "$DATA/database/"
+    [ -d "$old/uploads" ] && cp -a "$old/uploads/." "$DATA/uploads/"
+    break
+  done
+fi
+
 # 1. Neuesten Programmstand holen
 if [ ! -d "$APP/.git" ]; then
   log "Lade den Programmcode zum ersten Mal …"
